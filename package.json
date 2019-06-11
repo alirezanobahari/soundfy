@@ -8,10 +8,6 @@
     "build": "rimraf dist/ && babel ./ --out-dir dist/ --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log --copy-files",
     "start": "npm run build && node dist/app.js"
   },
-  "engines": {
-    "node": "11.x",
-    "npm": "6.x"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alirezanobahari/soundfy.git"
