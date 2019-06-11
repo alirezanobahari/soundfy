@@ -84,6 +84,9 @@ export const downloadMusic = async (telegramMessage, botInterface) => {
         `\n\n ${BOT_ID}`
       );
     } else {
+      const videoTempPath = `${path.resolve(__dirname, "..", "..")}/tmp/${
+        music.title
+      }.flv`;
       const musicTempPath = `${path.resolve(__dirname, "..", "..")}/tmp/${
         music.title
       }.mp3`;
@@ -95,53 +98,61 @@ export const downloadMusic = async (telegramMessage, botInterface) => {
       // Download video
       const videoStream = await download(music.videoId);
 
-      // Convert to mp3
-      const saveCommand = ffmpegConverter(videoStream);
-      // Write converted stream to temporary file
-      saveCommand.pipe(createWriteStream(musicTempPath));
+      videoStream.pipe(createWriteStream(videoTempPath)).on("end", () => {
+        // Convert to mp3
+        const saveCommand = ffmpegConverter(createReadStream(videoTempPath));
+        // Write converted stream to temporary file
+        saveCommand.pipe(createWriteStream(musicTempPath));
 
-      saveCommand.on("end", async () => {
-        try {
-          // Send to storage channel
-          const audioMessage = await botInterface.sendAudio(
-            STORAGE_CHANNEL_USERNAME,
-            music.title,
-            createReadStream(musicTempPath)
-          );
+        saveCommand.on("end", async () => {
+          try {
+            // Send to storage channel
+            const audioMessage = await botInterface.sendAudio(
+              STORAGE_CHANNEL_USERNAME,
+              music.title,
+              createReadStream(musicTempPath)
+            );
 
-          //Delete uploaded file
-          unlink(musicTempPath, err => {
-            console.log(err);
-          });
+            //Delete uploaded file
+            unlink(videoTempPath, err => {
+              console.log(err);
+            });
+            unlink(musicTempPath, err => {
+              console.log(err);
+            });
 
-          // Delete waitMessage
-          await botInterface.deleteMessage(
-            telegramMessage.chat.id,
-            waitMessage.message_id
-          );
+            // Delete waitMessage
+            await botInterface.deleteMessage(
+              telegramMessage.chat.id,
+              waitMessage.message_id
+            );
 
-          // Save messageId to db
-          music.telegramFileId = audioMessage.audio.file_id;
-          music.save();
+            // Save messageId to db
+            music.telegramFileId = audioMessage.audio.file_id;
+            music.save();
 
-          // Send music to user
-          const userAudioMessage = await botInterface.sendAudio(
-            telegramMessage.chat.id,
-            "",
-            audioMessage.audio.file_id
-          );
-          await botInterface.editCaption(
-            telegramMessage.chat.id,
-            userAudioMessage.message_id,
-            `\n\n ${BOT_ID}`
-          );
-        } catch (e) {
-          //Delete file if error happened
-          unlink(musicTempPath, err => {
-            console.log(err);
-          });
-          console.log(e);
-        }
+            // Send music to user
+            const userAudioMessage = await botInterface.sendAudio(
+              telegramMessage.chat.id,
+              "",
+              audioMessage.audio.file_id
+            );
+            await botInterface.editCaption(
+              telegramMessage.chat.id,
+              userAudioMessage.message_id,
+              `\n\n ${BOT_ID}`
+            );
+          } catch (e) {
+            //Delete file if error happened
+            unlink(videoTempPath, err => {
+              console.log(err);
+            });
+            unlink(musicTempPath, err => {
+              console.log(err);
+            });
+            console.log(e);
+          }
+        });
       });
     }
   } catch (e) {
