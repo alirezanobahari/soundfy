@@ -1,8 +1,14 @@
 import ffmpeg from "fluent-ffmpeg";
-import path from "path";
+import ffmpegStatic from "ffmpeg-static";
+//import path from "path";
 
 const configs = {
-  ffmpegPath: `${path.resolve(__dirname, "..", "..", "..")}`,
+  ffmpegPath: `${path.resolve(
+    __dirname,
+    "..",
+    "..",
+    ".."
+  )}\\ffmpeg\\bin\\ffmpeg.exe`,
   audioBitrate: [96, 128, 196, 320],
   audioCodec: "libmp3lame",
   outputFormat: "mp3",
@@ -18,12 +24,10 @@ export default (videoStream, title = "", artist = "") => {
     processTimeout
   } = configs;
 
-  console.log(ffmpegPath);
-
   var command = ffmpeg({
     source: videoStream
   })
-    .setFfmpegPath(ffmpegPath)
+    .setFfmpegPath(ffmpegStatic.path)
     .audioBitrate(audioBitrate[2])
     .withAudioCodec(audioCodec)
     .toFormat(outputFormat)
