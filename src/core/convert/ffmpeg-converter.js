@@ -17,18 +17,13 @@ const configs = {
 };
 
 export default (videoStream, title = "", artist = "") => {
-  const {
-    audioBitrate,
-    audioCodec,
-    outputFormat,
-    processTimeout
-  } = configs;
+  const { audioBitrate, audioCodec, outputFormat, processTimeout } = configs;
 
   var command = ffmpeg({
     source: videoStream
   })
     .setFfmpegPath(ffmpegStatic.path)
-    .audioBitrate(audioBitrate[2])
+    .audioBitrate(audioBitrate[0])
     .withAudioCodec(audioCodec)
     .toFormat(outputFormat)
     .outputOptions("-id3v2_version", "4")

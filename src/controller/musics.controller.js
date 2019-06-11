@@ -95,23 +95,29 @@ export const downloadMusic = async (telegramMessage, botInterface) => {
         telegramMessage.chat.id,
         "... لطفاً کمی صبر کنید"
       );
+      console.log(`${Date.now()} - downloading video`);
       // Download video
       const videoStream = await download(music.videoId);
 
       videoStream.pipe(createWriteStream(videoTempPath)).on("end", () => {
+        console.log(`${Date.now()} - video downloaded`);
         // Convert to mp3
+        console.log(`${Date.now()} - converting`);
         const saveCommand = ffmpegConverter(createReadStream(videoTempPath));
         // Write converted stream to temporary file
         saveCommand.pipe(createWriteStream(musicTempPath));
 
         saveCommand.on("end", async () => {
           try {
+            console.log(`${Date.now()} - converted`);
+            console.log(`${Date.now()} - uploading`);
             // Send to storage channel
             const audioMessage = await botInterface.sendAudio(
               STORAGE_CHANNEL_USERNAME,
               music.title,
               createReadStream(musicTempPath)
             );
+            console.log(`${Date.now()} - uploaded`);
 
             //Delete uploaded file
             unlink(videoTempPath, err => {
