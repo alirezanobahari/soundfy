@@ -13,7 +13,6 @@ export default async videoId => {
   const info = await ytdl.getInfo(youtubeBaseUrl + videoId, {
     quality: youtubeVideoQuality
   });
-  console.log(info);
   const videoStream = ytdl.downloadFromInfo(info, {
     quality: youtubeVideoQuality,
     requestOptions: requestOptions
