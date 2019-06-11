@@ -19,7 +19,6 @@
   },
   "homepage": "https://github.com/alirezanobahari/soundfy#readme",
   "dependencies": {
-    "ffmpeg-binaries": "^4.0.0",
     "fluent-ffmpeg": "^2.1.2",
     "horizon-youtube-mp3": "^1.9.1",
     "lodash.unescape": "^4.0.1",

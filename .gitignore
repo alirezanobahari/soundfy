@@ -41,8 +41,9 @@ build/Release
 node_modules/
 jspm_packages/
 
-# FFmpeg Directory
+# FFmpeg
 ffmpeg
+ffprobe
 
 # music Directory
 music/*
