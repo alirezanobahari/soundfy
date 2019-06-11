@@ -99,7 +99,8 @@ export const downloadMusic = async (telegramMessage, botInterface) => {
       // Download video
       const videoStream = await download(music.videoId);
 
-      videoStream.pipe(createWriteStream(videoTempPath)).on("end", () => {
+      videoStream.pipe(createWriteStream(videoTempPath));
+      videoStream.on("end", () => {
         console.log(`${Date.now()} - video downloaded`);
         // Convert to mp3
         console.log(`${Date.now()} - converting`);
@@ -107,7 +108,7 @@ export const downloadMusic = async (telegramMessage, botInterface) => {
         // Write converted stream to temporary file
         saveCommand.pipe(createWriteStream(musicTempPath));
 
-        saveCommand.on("finish", async () => {
+        saveCommand.on("end", async () => {
           try {
             console.log(`${Date.now()} - converted`);
             console.log(`${Date.now()} - uploading`);
