@@ -107,7 +107,7 @@ export const downloadMusic = async (telegramMessage, botInterface) => {
         // Write converted stream to temporary file
         saveCommand.pipe(createWriteStream(musicTempPath));
 
-        saveCommand.on("end", async () => {
+        saveCommand.on("finish", async () => {
           try {
             console.log(`${Date.now()} - converted`);
             console.log(`${Date.now()} - uploading`);
