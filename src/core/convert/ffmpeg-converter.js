@@ -18,6 +18,8 @@ const configs = {
 export default (videoStream, title = "", artist = "") => {
   const { audioBitrate, audioCodec, outputFormat, processTimeout } = configs;
 
+  console.log(ffmpegPath);
+
   var command = ffmpeg({
     source: videoStream
   })
