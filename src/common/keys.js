@@ -1,2 +1,2 @@
-export const GOOGLE_API_KEY = "AIzaSyDyDzhLDnIGEtbxzSFh2dOPd5uUr8xq4H0";
-export const TELEGRAM_BOT_TOKEN = "741357492:AAFZWcEOYlLfHXUHM46_gI10QQ5Ty-y1ZTI";
+export const GOOGLE_API_KEY = "";
+export const TELEGRAM_BOT_TOKEN = "";
